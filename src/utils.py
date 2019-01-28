@@ -11,6 +11,11 @@
 
 import random
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
 
 def train_test_split(df, test_size, random_state=None):
     """Splits data into training and testing sets.
@@ -71,5 +76,36 @@ def f1_score(df, p=None, r=None):
 
 def accuracy(df):
     correct_predictions = df[df.classification == df.label]
-    accuracy = len(correct_predictions) / len(df)
-    return accuracy
+    accu = len(correct_predictions) / len(df)
+    return accu
+
+
+def confusion_matrix(df):
+    """Creates confusion matrix with true labels along rows and predicted labels along columns.
+
+    Assumes df contains columns "label"=>True labels and "classification"=>Predicted labels"""
+    rows, true_counts = np.unique(df["label"].values, return_counts=True)
+    cols, predicted_counts = np.unique(df["label"].values, return_counts=True)
+
+    matrix = np.ndarray(shape=(len(rows), len(cols)), dtype=float)
+    for ri, row in enumerate(rows):
+        for ci, col in enumerate(cols):
+            matrix[ri][ci] = len(df[(df.label == row) & (df.classification == col)])
+
+    return matrix, rows, cols
+
+
+def plot_confusion_heatmap(df, xlabel='Predicted labels', ylabel='True labels', xticks_rotation=45, yticks_rotation=0,
+                           fontsize=14):
+    matrix, class_names, _ = confusion_matrix(df)
+
+    df_cm = pd.DataFrame(
+        matrix, index=class_names, columns=class_names,
+    )
+    heatmap = sns.heatmap(df_cm, annot=True, fmt='g')
+    heatmap.xaxis.set_ticklabels(heatmap.xaxis.get_ticklabels(), rotation=xticks_rotation, ha='right',
+                                 fontsize=fontsize)
+    heatmap.yaxis.set_ticklabels(heatmap.yaxis.get_ticklabels(), rotation=yticks_rotation, ha='right',
+                                 fontsize=fontsize)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
