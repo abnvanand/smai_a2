@@ -1,5 +1,7 @@
 import random
 
+import numpy as np
+
 
 def train_test_split(df, test_size, random_state=None):
     """Splits data into training and testing sets.
@@ -18,3 +20,15 @@ def train_test_split(df, test_size, random_state=None):
     train_df = df.drop(test_indices)
 
     return train_df, test_df
+
+
+def inspect_data(df):
+    for col in df.columns:
+        unique_vals, counts = np.unique(df[col].values, return_counts=True)
+        print(col, len(unique_vals), "min:", min(unique_vals), "max:", max(unique_vals))
+        if len(unique_vals) <= 10:
+            print(unique_vals)
+            print(counts)
+        print("------------------")
+
+    print("Datframe size:", len(df))
