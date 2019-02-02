@@ -39,7 +39,7 @@ def true_negative(cf, true_class_index):
     return matrix_sum - row_sum - column_sum + true_positive(cf, true_class_index)
 
 
-def precision_(df, true_class):
+def precision(df, true_class):
     # precision = TP / (TP+FP)
     cf, class_labels, __ = confusion_matrix(df)
     true_class_index = np.where(class_labels == true_class)[0][0]
@@ -48,7 +48,7 @@ def precision_(df, true_class):
     return TP / (TP + FP)
 
 
-def recall_(df, true_class):
+def recall(df, true_class):
     # recall = TP / (TP + FN)
     cf, class_labels, __ = confusion_matrix(df)
     true_class_index = np.where(class_labels == true_class)[0][0]
@@ -57,11 +57,11 @@ def recall_(df, true_class):
     return TP / (TP + FN)
 
 
-def f1_score_(df, true_class, p=None, r=None):
+def f1_score(df, true_class, p=None, r=None):
     if p is None:
-        p = precision_(df, true_class)
+        p = precision(df, true_class)
     if r is None:
-        r = recall_(df, true_class)
+        r = recall(df, true_class)
 
     if p + r == 0:
         return 0
